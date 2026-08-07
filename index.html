@@ -32,6 +32,17 @@
     <div id="modalRoot"></div>
     <input id="restoreInput" type="file" accept="application/json" hidden />
     <script src="app.js"></script>
+    <style>.day{font:inherit;text-align:left;cursor:pointer}.day:hover{background:#f0f9f2}.day.selected{background:#dff4e4;border-color:#198754;box-shadow:inset 0 0 0 1px #198754}</style>
+    <script>
+      document.addEventListener('click', e => {
+        const b=e.target.closest('[data-action="select-day"],[data-action="calendar-prev"],[data-action="calendar-next"]');
+        if(!b)return;
+        if(b.dataset.action==='select-day') selectedCalendarDate=b.dataset.date;
+        if(b.dataset.action==='calendar-prev') { calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()-1,1,12); selectedCalendarDate=iso(calendarMonth); }
+        if(b.dataset.action==='calendar-next') { calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1,12); selectedCalendarDate=iso(calendarMonth); }
+        render();
+      });
+    </script>
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').then(registration => {
