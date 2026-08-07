@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#14532d" />
+    <meta name="description" content="Control de préstamos, cobros y recibos" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Préstamo Claro</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark">$</span><span>Préstamo<br><b>Claro</b></span></div>
+        <nav id="nav" aria-label="Navegación principal">
+          <button class="nav-link active" data-view="dashboard">Resumen</button>
+          <button class="nav-link" data-view="clients">Clientes</button>
+          <button class="nav-link" data-view="loans">Préstamos</button>
+          <button class="nav-link" data-view="receivables">Cuentas por cobrar</button>
+          <button class="nav-link" data-view="calendar">Agenda de pagos</button>
+          <button class="nav-link" data-view="history">Historial</button>
+          <button class="nav-link" data-view="backup">Copias de seguridad</button>
+        </nav>
+        <p class="sidebar-note">Tus datos permanecen en este dispositivo.</p>
+      </aside>
+      <main>
+        <header><button id="menuButton" class="menu-button" aria-label="Abrir menú">☰</button><div><p class="eyebrow" id="today"></p><h1 id="pageTitle">Resumen</h1></div><button class="primary" data-action="new-loan">+ Nuevo préstamo</button></header>
+        <section id="view" class="view"></section>
+      </main>
+    </div>
+    <div id="modalRoot"></div>
+    <input id="restoreInput" type="file" accept="application/json" hidden />
+    <script src="app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').then(registration => {
+          // Comprueba una nueva versión también mientras la app permanece abierta.
+          setInterval(() => registration.update(), 60 * 60 * 1000);
+        });
+      }
+    </script>
+  </body>
+</html>
