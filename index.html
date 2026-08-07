@@ -1,55 +1,53 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#14532d" />
-    <meta name="description" content="Control de préstamos, cobros y recibos" />
-    <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="stylesheet" href="styles.css" />
-    <title>Préstamo Claro</title>
-  </head>
-  <body>
-    <div class="app-shell">
-      <aside class="sidebar">
-        <div class="brand"><span class="brand-mark">$</span><span>Préstamo<br><b>Claro</b></span></div>
-        <nav id="nav" aria-label="Navegación principal">
-          <button class="nav-link active" data-view="dashboard">Resumen</button>
-          <button class="nav-link" data-view="clients">Clientes</button>
-          <button class="nav-link" data-view="loans">Préstamos</button>
-          <button class="nav-link" data-view="receivables">Cuentas por cobrar</button>
-          <button class="nav-link" data-view="calendar">Agenda de pagos</button>
-          <button class="nav-link" data-view="history">Historial</button>
-          <button class="nav-link" data-view="backup">Copias de seguridad</button>
-        </nav>
-        <p class="sidebar-note">Tus datos permanecen en este dispositivo.</p>
-      </aside>
-      <main>
-        <header><button id="menuButton" class="menu-button" aria-label="Abrir menú">☰</button><div><p class="eyebrow" id="today"></p><h1 id="pageTitle">Resumen</h1></div><button class="primary" data-action="new-loan">+ Nuevo préstamo</button></header>
-        <section id="view" class="view"></section>
-      </main>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Préstamos</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body>
+
+  <!-- PANTALLA DE LOGIN Y BLOQUEO -->
+  <div id="loginContainer" class="auth-container">
+    <div class="auth-box">
+      <h2 id="authTitle">Iniciar Sesión</h2>
+      <p id="authSubtitle">Ingresa tus credenciales para acceder al sistema.</p>
+
+      <form id="loginForm">
+        <div class="input-group">
+          <label for="loginEmail">Correo Electrónico</label>
+          <input type="email" id="loginEmail" required placeholder="usuario@ejemplo.com">
+        </div>
+
+        <div class="input-group">
+          <label for="loginPassword">Contraseña</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••">
+        </div>
+
+        <button type="submit" id="btnLogin">Ingresar</button>
+      </form>
+
+      <div id="authError" class="auth-error" style="display: none;"></div>
     </div>
-    <div id="modalRoot"></div>
-    <input id="restoreInput" type="file" accept="application/json" hidden />
-    <script src="app.js"></script>
-    <style>.day{font:inherit;text-align:left;cursor:pointer}.day:hover{background:#f0f9f2}.day.selected{background:#dff4e4;border-color:#198754;box-shadow:inset 0 0 0 1px #198754}</style>
-    <script>
-      document.addEventListener('click', e => {
-        const b=e.target.closest('[data-action="select-day"],[data-action="calendar-prev"],[data-action="calendar-next"]');
-        if(!b)return;
-        if(b.dataset.action==='select-day') selectedCalendarDate=b.dataset.date;
-        if(b.dataset.action==='calendar-prev') { calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()-1,1,12); selectedCalendarDate=iso(calendarMonth); }
-        if(b.dataset.action==='calendar-next') { calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1,12); selectedCalendarDate=iso(calendarMonth); }
-        render();
-      });
-    </script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').then(registration => {
-          // Comprueba una nueva versión también mientras la app permanece abierta.
-          setInterval(() => registration.update(), 60 * 60 * 1000);
-        });
-      }
-    </script>
-  </body>
+  </div>
+
+  <!-- CONTENIDO ORIGINAL DE TU APLICACIÓN (Oculto por defecto) -->
+  <div id="appContent" style="display: none;">
+    
+    <!-- AQUÍ VA TODO EL CONTENIDO ORIGINAL QUE YA TIENES DENTRO DEL BODY DE INDEX.HTML -->
+
+    <div style="text-align: right; padding: 10px;">
+      <button onclick="cerrarSesion()" style="background-color: #d9534f; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+
+  <!-- SDK DE SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- TU ARCHIVO JS PRINCIPAL -->
+  <script src="app.js"></script>
+</body>
 </html>
