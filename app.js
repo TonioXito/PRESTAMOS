@@ -1,11 +1,10 @@
 // ==========================================
 // 1. CONFIGURACIÓN Y AUTENTICACIÓN SUPABASE
 // ==========================================
-const SUPABASE_URL = 'https://skznsamhdyslfmkgqdxz.supabase.co'; // Tu URL de proyecto Supabase
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrem5zYW1oZHlzbGZta2dxZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMjgwODUsImV4cCI6MjEwMTcwNDA4NX0.7_e20KNDLOIBWMtfpUMXIZMoPAAoVSwuCYUaOyZdUCQ'; // Tu Anon Key
+const SUPABASE_URL = 'https://skznsamhdyslfmkgqdxz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNrem5zYW1oZHlzbGZta2dxZHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMjgwODUsImV4cCI6MjEwMTcwNDA4NX0.7_e20KNDLOIBWMtfpUMXIZMoPAAoVSwuCYUaOyZdUCQ';
 
-// Inicialización corregida para CDN
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   const loginForm = document.getElementById('loginForm');
@@ -24,29 +23,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function verificarEstadoAcceso() {
-  if (!supabase) return;
+  if (!supabaseClient) return;
 
-  const { data: { session }, error } = await supabase.auth.getSession();
+  const { data: { session }, error } = await supabaseClient.auth.getSession();
 
   const loginContainer = document.getElementById('loginContainer');
   const appContent = document.getElementById('appContent');
 
   if (!session) {
-    // Sin sesión activa: Mostrar Login y ocultar App
     if (loginContainer) loginContainer.style.display = 'flex';
     if (appContent) appContent.style.display = 'none';
     return;
   }
 
-  // Verificar si la cuenta ha sido suspendida/baneada en el panel de Supabase
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await supabaseClient.auth.getUser();
   
   if (user && user.banned_until) {
     mostrarPantallaBloqueo("Tu suscripción ha vencido o tu acceso ha sido suspendido por el administrador.");
     return;
   }
 
-  // Usuario válido: Ocultar Login y mostrar la App
   if (loginContainer) loginContainer.style.display = 'none';
   if (appContent) appContent.style.display = 'block';
 }
@@ -55,7 +51,12 @@ async function iniciarSesion(email, password) {
   const errorBox = document.getElementById('authError');
   if (errorBox) errorBox.style.display = 'none';
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  if (!supabaseClient) {
+    alert("Error al cargar el módulo de autenticación.");
+    return;
+  }
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
     email: email,
     password: password
   });
@@ -73,7 +74,7 @@ async function iniciarSesion(email, password) {
 }
 
 async function cerrarSesion() {
-  if (supabase) await supabase.auth.signOut();
+  if (supabaseClient) await supabaseClient.auth.signOut();
   window.location.reload();
 }
 
