@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Préstamos</title>
+  <title>PRÉSTAMO CLARO</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="manifest" href="manifest.webmanifest">
 </head>
@@ -33,16 +33,64 @@
     </div>
   </div>
 
-  <!-- CONTENIDO ORIGINAL DE TU APLICACIÓN (Oculto por defecto) -->
+  <!-- CONTENIDO COMPLETO DE TU APLICACIÓN (Oculto por defecto) -->
   <div id="appContent" style="display: none;">
     
-    <!-- AQUÍ VA TODO EL CONTENIDO ORIGINAL QUE YA TIENES DENTRO DEL BODY DE INDEX.HTML -->
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo">$</div>
+          <div>
+            <h1>PRÉSTAMO CLARO</h1>
+            <small id="today"></small>
+          </div>
+        </div>
 
-    <div style="text-align: right; padding: 10px;">
-      <button onclick="cerrarSesion()" style="background-color: #d9534f; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">
-        Cerrar Sesión
-      </button>
+        <nav class="nav" id="nav">
+          <button class="nav-link active" data-view="dashboard">
+            <span class="icon">📊</span> Resumen
+          </button>
+          <button class="nav-link" data-view="receivables">
+            <span class="icon">⌛</span> Cuentas por cobrar
+          </button>
+          <button class="nav-link" data-view="calendar">
+            <span class="icon">📅</span> Agenda de pagos
+          </button>
+          <button class="nav-link" data-view="loans">
+            <span class="icon">📝</span> Préstamos y facturas
+          </button>
+          <button class="nav-link" data-view="clients">
+            <span class="icon">👥</span> Clientes
+          </button>
+          <button class="nav-link" data-view="history">
+            <span class="icon">📜</span> Historial de pagos
+          </button>
+          <button class="nav-link" data-view="backup">
+            <span class="icon">💾</span> Copias de seguridad
+          </button>
+        </nav>
+
+        <!-- BOTÓN DE CERRAR SESIÓN EN LA BARRA LATERAL -->
+        <div style="padding: 15px; margin-top: auto;">
+          <button onclick="cerrarSesion()" style="width: 100%; background-color: #d9534f; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+            🚪 Cerrar Sesión
+          </button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <button class="icon-button menu-button" id="menuButton">☰</button>
+          <h2 id="pageTitle">Resumen</h2>
+        </header>
+
+        <div class="content" id="view"></div>
+      </main>
     </div>
+
+    <div id="modalRoot"></div>
+    <input type="file" id="restoreInput" accept="application/json" style="display:none">
+
   </div>
 
   <!-- SDK DE SUPABASE -->
