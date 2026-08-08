@@ -184,7 +184,36 @@ function close(){const m = document.getElementById('modalRoot'); if (m) m.innerH
 function exportData(){let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`respaldo-prestamos-${today}.json`;a.click();URL.revokeObjectURL(a.href)}
 function demo(){if(data.clients.length||data.loans.length){if(!confirm('Añadir ejemplos a tus datos actuales?'))return}let c={id:uid(),name:'María González',document:'V-18.456.789',phone:'0412-555-0184',email:'',address:''};data.clients.push(c);data.loans.push({id:uid(),clientId:c.id,number:'FAC-0001',principal:300,interest:10,total:330,date:today,nextPayment:today,notes:'Pago semanal'});save();view='dashboard';render()}
 
-document.addEventListener('click',e=>{let b=e.target.closest('[data-action],[data-view-link]');if(!b)return;if(b.dataset.viewLink){view=b.dataset.viewLink;render();return}let a=b.dataset.action;if(a==='close')close();if(a==='new-client')clientForm();if(a==='new-loan')loanForm();if(a==='loan-detail')loanDetail(b.dataset.id);if(a==='client-detail'){let c=data.clients.find(x=>x.id===b.dataset.id);let l=data.loans.find(x=>x.clientId===c.id);if(l)loanDetail(l.id);else modal(esc(c.name),`<p>${esc(c.phone||'Sin teléfono')}</p><p>${esc(c.address||'Sin dirección')}</p>`)}if(a==='new-payment')paymentForm(b.dataset.id);if(a==='receipt')receipt(b.dataset.id);if(a==='print')window.print();if(a==='export')exportData();if(a==='restore'){ const r = document.getElementById('restoreInput'); if (r) r.click(); }if(a==='demo')demo();if(a==='enable-notifications'&&'Notification' in window)Notification.requestPermission().then(sendDueNotifications);if(a==='share-receipt'){let p=data.payments.find(x=>x.id===b.dataset.id),l=data.loans.find(x=>x.id===p.loanId),c=client(l.clientId);let msg=`Hola ${c.name}, recibimos tu pago de ${money(p.amount)} para la factura ${l.number}. Saldo restante: ${money(balance(l))}. Gracias.`;window.open(`https://wa.me/${(c.phone||'').replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`,'_blank')}});
+document.addEventListener('click',e=>{
+  let b=e.target.closest('[data-action],[data-view-link]');
+  if(!b)return;
+  if(b.dataset.viewLink){view=b.dataset.viewLink;render();return}
+  let a=b.dataset.action;
+  if(a==='close')close();
+  if(a==='new-client')clientForm();
+  if(a==='new-loan')loanForm();
+  if(a==='loan-detail')loanDetail(b.dataset.id);
+  if(a==='client-detail'){
+    let c=data.clients.find(x=>x.id===b.dataset.id);
+    let l=data.loans.find(x=>x.clientId===c.id);
+    if(l)loanDetail(l.id);
+    else modal(esc(c.name),`<p>${esc(c.phone||'Sin teléfono')}</p><p>${esc(c.address||'Sin dirección')}</p>`);
+  }
+  if(a==='new-payment')paymentForm(b.dataset.id);
+  if(a==='receipt')receipt(b.dataset.id);
+  if(a==='print')window.print();
+  if(a==='export')exportData();
+  if(a==='restore'){const r = document.getElementById('restoreInput'); if (r) r.click();}
+  if(a==='demo')demo();
+  if(a==='enable-notifications'&&'Notification' in window)Notification.requestPermission().then(sendDueNotifications);
+  if(a==='share-receipt'){
+    let p=data.payments.find(x=>x.id===b.dataset.id);
+    let l=data.loans.find(x=>x.id===p.loanId);
+    let c=client(l.clientId);
+    let msg=`Hola ${c.name}, recibimos tu pago de ${money(p.amount)} para la factura ${l.number}. Saldo restante: ${money(balance(l))}. Gracias.`;
+    window.open(`https://wa.me/${(c.phone||'').replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`,'_blank');
+  }
+});
 
 const navEl = document.getElementById('nav');
 if (navEl) {
