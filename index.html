@@ -1,0 +1,2002 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RafaCarnes - Sistema de Gestión</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, #c0392b, #8b1a1a);
+    color: #fff;
+    padding: 16px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.4);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .logo-titulo { display: flex; align-items: center; gap: 12px; }
+  .logo { width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; object-fit: cover; }
+  header h1 { font-size: 1.3rem; font-weight: 700; }
+  header p { font-size: .82rem; opacity: .85; margin-top: 1px; }
+  .header-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  nav {
+    display: flex;
+    background: #16213e;
+    border-bottom: 2px solid #c0392b;
+    overflow-x: auto;
+    position: sticky;
+    top: 76px;
+    z-index: 49;
+  }
+  nav button {
+    flex: 1;
+    padding: 13px 8px;
+    border: none;
+    background: transparent;
+    color: #b0b0b0;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all .2s;
+  }
+  nav button:hover { color: #fff; background: rgba(192,57,43,.15); }
+  nav button.active {
+    color: #fff;
+    background: rgba(192,57,43,.2);
+    border-bottom-color: #e74c3c;
+  }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 16px 80px;
+  }
+  .hidden { display: none !important; }
+
+  .card {
+    background: #16213e;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+    border: 1px solid #1f3460;
+  }
+  .card h2 {
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+    color: #e74c3c;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 .icon { font-size: 1.2rem; }
+
+  .form-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  .form-group { flex: 1 1 180px; display: flex; flex-direction: column; gap: 4px; }
+  .form-group label { font-size: .82rem; color: #94a3b8; font-weight: 600; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 12px;
+    border: 1px solid #2d4a7a;
+    border-radius: 8px;
+    font-size: .95rem;
+    background: #0f3460;
+    color: #e0e0e0;
+    width: 100%;
+  }
+  .form-group textarea { resize: vertical; min-height: 60px; }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 2px rgba(231,76,60,.3);
+  }
+  input::placeholder { color: #5a6a8a; }
+
+  .btn {
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: .92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { background: #e74c3c; transform: translateY(-1px); }
+  .btn.secondary { background: #2d4a7a; }
+  .btn.secondary:hover { background: #3a6bb5; }
+  .btn.success { background: #27ae60; }
+  .btn.success:hover { background: #2ecc71; }
+  .btn.warning { background: #f39c12; }
+  .btn.warning:hover { background: #f1c40f; color: #333; }
+  .btn.small { padding: 6px 12px; font-size: .78rem; }
+  .btn.danger { background: #7f1d1d; }
+  .btn.danger:hover { background: #991b1b; }
+  .btn.header-btn { background: rgba(255,255,255,.18); font-size: .82rem; padding: 8px 14px; }
+  .btn.header-btn:hover { background: rgba(255,255,255,.3); }
+
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  th {
+    text-align: left;
+    padding: 10px 8px;
+    border-bottom: 2px solid #2d4a7a;
+    color: #e74c3c;
+    font-weight: 600;
+    white-space: nowrap;
+    font-size: .82rem;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+  }
+  td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #1f3460;
+    color: #d0d0d0;
+  }
+  tr:hover td { background: rgba(231,76,60,.05); }
+  td .actions { display: flex; gap: 5px; flex-wrap: wrap; }
+
+  .empty {
+    text-align: center;
+    color: #5a6a8a;
+    padding: 30px 10px;
+    font-style: italic;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+  }
+  .badge.pendiente { background: #78350f; color: #fbbf24; }
+  .badge.pagado { background: #14532d; color: #4ade80; }
+  .badge.parcial { background: #1e3a5f; color: #60a5fa; }
+  .badge.vencido { background: #7f1d1d; color: #fca5a5; }
+  .badge.contado { background: #14532d; color: #4ade80; }
+  .badge.credito { background: #78350f; color: #fbbf24; }
+  .badge.quincenal { background: #1e3a5f; color: #60a5fa; }
+  .badge.personalizado { background: #4a1942; color: #d946ef; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+  .stat {
+    background: #0f3460;
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+    border: 1px solid #2d4a7a;
+  }
+  .stat .value { font-size: 1.6rem; font-weight: 700; color: #e74c3c; }
+  .stat .label { font-size: .8rem; color: #7a8aaa; margin-top: 4px; }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  .filters input, .filters select {
+    padding: 8px 12px;
+    border: 1px solid #2d4a7a;
+    border-radius: 8px;
+    font-size: .88rem;
+    background: #0f3460;
+    color: #e0e0e0;
+  }
+  .filters input { flex: 1 1 200px; }
+
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(4px);
+  }
+  .modal {
+    background: #16213e;
+    border: 1px solid #2d4a7a;
+    border-radius: 16px;
+    padding: 28px;
+    width: 94%;
+    max-width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 12px 40px rgba(0,0,0,.5);
+  }
+  .modal h3 { margin-bottom: 18px; color: #e74c3c; font-size: 1.1rem; }
+  .modal .form-row input,
+  .modal .form-row select { flex-basis: 100%; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .card-head h2 { margin-bottom: 0; }
+
+  .totales-bar {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    padding: 14px;
+    background: #0f3460;
+    border-radius: 10px;
+    border: 1px solid #2d4a7a;
+  }
+  .totales-bar .item { font-size: .88rem; }
+  .totales-bar .item span { color: #7a8aaa; }
+  .totales-bar .item b { color: #e74c3c; font-size: 1.05rem; }
+
+  .producto-item {
+    display: flex;
+    gap: 10px;
+    align-items: end;
+    flex-wrap: wrap;
+    padding: 10px;
+    background: #0f3460;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #2d4a7a;
+  }
+  .producto-item .form-group { flex: 1 1 120px; }
+  .producto-item .btn-remove {
+    background: #7f1d1d;
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .producto-item .btn-remove:hover { background: #991b1b; }
+
+  .recibo-preview {
+    background: #fff;
+    color: #333;
+    border-radius: 12px;
+    padding: 24px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .recibo-preview .recibo-header {
+    text-align: center;
+    border-bottom: 2px dashed #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  .recibo-preview .recibo-header h4 {
+    font-size: 16px;
+    margin: 0;
+    color: #c0392b;
+  }
+  .recibo-preview .recibo-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .recibo-preview .recibo-total {
+    border-top: 2px dashed #ccc;
+    margin-top: 10px;
+    padding-top: 10px;
+    font-weight: bold;
+    font-size: 15px;
+  }
+  .recibo-preview .recibo-footer {
+    text-align: center;
+    border-top: 2px dashed #ccc;
+    margin-top: 12px;
+    padding-top: 10px;
+    font-size: 11px;
+    color: #888;
+  }
+
+  footer {
+    text-align: center;
+    color: #4a5a7a;
+    font-size: .78rem;
+    padding: 20px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+  }
+  .check-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #e74c3c;
+  }
+
+  .dia-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: #0f3460;
+    border: 1px solid #2d4a7a;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: .85rem;
+    color: #b0c0d0;
+    transition: all .2s;
+  }
+  .dia-check:has(input:checked) {
+    background: rgba(231,76,60,.2);
+    border-color: #e74c3c;
+    color: #fff;
+  }
+  .dia-check input { accent-color: #e74c3c; width: 16px; height: 16px; }
+
+  .cronograma-box {
+    background: #0f3460;
+    border: 1px solid #2d4a7a;
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 10px;
+  }
+  .cronograma-box h4 { color: #e74c3c; font-size: .9rem; margin-bottom: 8px; }
+  .cronograma-box .fecha-item {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(231,76,60,.15);
+    border: 1px solid #e74c3c;
+    border-radius: 6px;
+    margin: 3px;
+    font-size: .82rem;
+    color: #fca5a5;
+  }
+  .cronograma-box .fecha-item.pasada {
+    background: rgba(34,197,94,.12);
+    border-color: #22c55e;
+    color: #4ade80;
+    text-decoration: line-through;
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.1rem; }
+    nav button { font-size: .8rem; padding: 11px 6px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stat .value { font-size: 1.2rem; }
+  }
+
+  @media print {
+    body { background: #fff; color: #000; }
+    header, nav, footer, .btn, .filters { display: none !important; }
+    .card { border: 1px solid #ccc; box-shadow: none; background: #fff; }
+    .card h2 { color: #c0392b; }
+    td, th { color: #000; border-color: #ccc; }
+    .logo { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-titulo">
+      <img class="logo" src="logo.jpg" alt="RafaCarnes" onerror="this.style.display='none'">
+      <div>
+        <h1>RafaCarnes</h1>
+        <p>Inventario, clientes, facturas y pagos</p>
+      </div>
+    </div>
+    <div class="header-btns">
+      <button class="btn header-btn" onclick="descargarCopia()">Backup</button>
+      <button class="btn header-btn" onclick="document.getElementById('restaurar-input').click()">Restaurar</button>
+      <input type="file" id="restaurar-input" accept=".json" class="hidden" onchange="restaurarCopia(event)">
+    </div>
+  </div>
+</header>
+
+<nav>
+  <button data-tab="inventario" class="active">Inventario</button>
+  <button data-tab="clientes">Clientes</button>
+  <button data-tab="ventas">Ventas</button>
+  <button data-tab="pagos">Pagos</button>
+  <button data-tab="reportes">Reportes</button>
+</nav>
+
+<main>
+
+  <!-- ============ TAB INVENTARIO ============ -->
+  <section id="tab-inventario">
+    <div class="card">
+      <h2><span class="icon">🥩</span> Registrar Res Comprada</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Fecha de compra</label>
+          <input id="inv-fecha" type="date">
+        </div>
+        <div class="form-group">
+          <label>Peso (kg)</label>
+          <input id="inv-peso" type="number" min="0" step="0.1" placeholder="Ej: 120.5">
+        </div>
+        <div class="form-group">
+          <label>Precio por kg ($)</label>
+          <input id="inv-precio-kg" type="number" min="0" step="0.01" placeholder="Ej: 85.00">
+        </div>
+        <div class="form-group">
+          <label>Costo total ($)</label>
+          <input id="inv-costo-total" type="number" min="0" step="0.01" placeholder="Calculado automáticamente" readonly style="background:#1a2744;color:#7a8aaa;">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Proveedor / Notas</label>
+          <input id="inv-notas" placeholder="Nombre del proveedor o notas">
+        </div>
+      </div>
+      <button class="btn" onclick="agregarRes()"> Registrar Res </button>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2><span class="icon">📦</span> Inventario de Reses</h2>
+      </div>
+      <div class="stats" id="inv-stats"></div>
+      <div class="filters" style="margin-top:16px;">
+        <input id="inv-buscar" placeholder="Buscar por proveedor..." oninput="renderInventario()">
+        <input id="inv-desde" type="date" onchange="renderInventario()">
+        <span style="color:#5a6a8a;">a</span>
+        <input id="inv-hasta" type="date" onchange="renderInventario()">
+      </div>
+      <div id="inventario-lista"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB CLIENTES ============ -->
+  <section id="tab-clientes" class="hidden">
+    <div class="card">
+      <h2><span class="icon">👤</span> Nuevo Cliente</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre completo</label>
+          <input id="cli-nombre" placeholder="Nombre del cliente">
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input id="cli-telefono" placeholder="Ej: 555-123-4567">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Dirección</label>
+          <input id="cli-direccion" placeholder="Dirección del cliente">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="cli-tipo">
+            <option value="local">Local / Restaurante</option>
+            <option value="persona">Persona</option>
+            <option value="mayorista">Mayorista</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Notas</label>
+          <input id="cli-notas" placeholder="Notas adicionales (opcional)">
+        </div>
+      </div>
+      <button class="btn" onclick="agregarCliente()"> Agregar Cliente </button>
+    </div>
+
+    <div class="card">
+      <h2><span class="icon">📋</span> Lista de Clientes</h2>
+      <div class="filters">
+        <input id="cli-buscar" placeholder="Buscar cliente..." oninput="renderClientes()">
+        <select id="cli-filtro-tipo" onchange="renderClientes()">
+          <option value="">Todos</option>
+          <option value="local">Locales</option>
+          <option value="persona">Personas</option>
+          <option value="mayorista">Mayoristas</option>
+        </select>
+      </div>
+      <div id="clientes-lista"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB VENTAS / FACTURAS ============ -->
+  <section id="tab-ventas" class="hidden">
+    <div class="card">
+      <h2><span class="icon">🧾</span> Nueva Venta / Factura</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cliente</label>
+          <select id="vent-cliente"></select>
+        </div>
+        <div class="form-group">
+          <label>Fecha de venta</label>
+          <input id="vent-fecha" type="date">
+        </div>
+        <div class="form-group">
+          <label>Tipo de venta</label>
+          <select id="vent-tipo" onchange="toggleCreditoFields()">
+            <option value="contado">Contado</option>
+            <option value="credito">Crédito</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="credito-fields" class="hidden">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Frecuencia de cobro</label>
+            <select id="vent-frecuencia" onchange="toggleFrecuenciaFields()">
+              <option value="">Seleccionar...</option>
+              <option value="semanal">Semanal</option>
+              <option value="quincenal">Quincenal</option>
+              <option value="mensual">Mensual</option>
+              <option value="personalizado">Personalizado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Monto total de la venta ($)</label>
+            <input id="vent-monto-total" type="number" min="0" step="0.01" placeholder="Se calcula de los productos" readonly style="background:#1a2744;color:#7a8aaa;">
+          </div>
+        </div>
+
+        <div id="freq-semanal" class="hidden" style="margin-bottom:14px;">
+          <label style="font-size:.82rem;color:#94a3b8;font-weight:600;display:block;margin-bottom:8px;">Día de cobro semanal</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <label class="dia-check"><input type="radio" name="dia-semana" value="1"> Lunes</label>
+            <label class="dia-check"><input type="radio" name="dia-semana" value="2"> Martes</label>
+            <label class="dia-check"><input type="radio" name="dia-semana" value="3"> Miércoles</label>
+            <label class="dia-check"><input type="radio" name="dia-semana" value="4"> Jueves</label>
+            <label class="dia-check"><input type="radio" name="dia-semana" value="5"> Viernes</label>
+            <label class="dia-check"><input type="radio" name="dia-semana" value="6"> Sábado</label>
+            <label class="dia-check"><input type="radio" name="dia-semana" value="0"> Domingo</label>
+          </div>
+        </div>
+
+        <div id="freq-quincenal" class="hidden" style="margin-bottom:14px;">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Días de cobro (quincedial)</label>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+                <label class="dia-check"><input type="checkbox" id="quin-dia1" checked> Día 1 del mes</label>
+                <label class="dia-check"><input type="checkbox" id="quin-dia15" checked> Día 15 del mes</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="freq-mensual" class="hidden" style="margin-bottom:14px;">
+          <div class="form-row">
+            <div class="form-group" style="flex:0 1 200px;">
+              <label>Día del mes para cobro</label>
+              <select id="vent-dia-mes">
+                <option value="1">Día 1</option>
+                <option value="5">Día 5</option>
+                <option value="10">Día 10</option>
+                <option value="15" selected>Día 15</option>
+                <option value="20">Día 20</option>
+                <option value="25">Día 25</option>
+                <option value="28">Día 28</option>
+                <option value="30">Día 30 / Fin de mes</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="freq-personalizado" class="hidden" style="margin-bottom:14px;">
+          <label style="font-size:.82rem;color:#94a3b8;font-weight:600;display:block;margin-bottom:8px;">Selecciona los días de cobro</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+            <label class="dia-check"><input type="checkbox" class="dia-pers" value="1"> Lunes</label>
+            <label class="dia-check"><input type="checkbox" class="dia-pers" value="2"> Martes</label>
+            <label class="dia-check"><input type="checkbox" class="dia-pers" value="3"> Miércoles</label>
+            <label class="dia-check"><input type="checkbox" class="dia-pers" value="4"> Jueves</label>
+            <label class="dia-check"><input type="checkbox" class="dia-pers" value="5"> Viernes</label>
+            <label class="dia-check"><input type="checkbox" class="dia-pers" value="6"> Sábado</label>
+            <label class="dia-check"><input type="checkbox" class="dia-pers" value="0"> Domingo</label>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:0 1 200px;">
+              <label>Cada cuántas semanas</label>
+              <select id="vent-pers-frecuencia">
+                <option value="1">Cada semana</option>
+                <option value="2">Cada 2 semanas</option>
+                <option value="3">Cada 3 semanas</option>
+                <option value="4">Cada 4 semanas (1 mes)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="cronograma-preview" class="hidden" style="margin-top:10px;"></div>
+
+        <div class="form-row" style="margin-top:10px;">
+          <div class="form-group">
+            <label>Fecha límite final de crédito (opcional)</label>
+            <input id="vent-vencimiento" type="date">
+          </div>
+        </div>
+      </div>
+
+      <h3 style="color:#e74c3c; margin:14px 0 10px; font-size:.95rem;">Productos / Cortes</h3>
+      <div id="venta-productos"></div>
+      <button class="btn secondary small" onclick="agregarProductoVenta()" style="margin-bottom:16px;">+ Agregar corte</button>
+
+      <div class="totales-bar" id="venta-totales"></div>
+
+      <div style="margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn success" onclick="guardarVenta()">Guardar Venta</button>
+        <button class="btn warning" onclick="guardarVenta(true)">Guardar y enviar recibo por WhatsApp</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2><span class="icon">📑</span> Ventas Registradas</h2>
+      </div>
+      <div class="filters">
+        <input id="vent-buscar" placeholder="Buscar por cliente..." oninput="renderVentas()">
+        <select id="vent-filtro-tipo" onchange="renderVentas()">
+          <option value="">Todas</option>
+          <option value="contado">Contado</option>
+          <option value="credito">Crédito</option>
+        </select>
+        <input id="vent-desde" type="date" onchange="renderVentas()">
+        <span style="color:#5a6a8a;">a</span>
+        <input id="vent-hasta" type="date" onchange="renderVentas()">
+      </div>
+      <div id="ventas-lista"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB PAGOS ============ -->
+  <section id="tab-pagos" class="hidden">
+    <div class="card">
+      <h2><span class="icon">💰</span> Registrar Pago</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Venta asociada (crédito)</label>
+          <select id="pago-venta">
+            <option value="">Seleccionar venta pendiente...</option>
+          </select>
+        </div>
+      </div>
+      <div id="pago-info-venta" class="hidden" style="margin-bottom:14px;"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Monto a pagar ($)</label>
+          <input id="pago-monto" type="number" min="0" step="0.01" placeholder="Monto del pago">
+        </div>
+        <div class="form-group">
+          <label>Fecha de pago</label>
+          <input id="pago-fecha" type="date">
+        </div>
+        <div class="form-group">
+          <label>Método de pago</label>
+          <select id="pago-metodo">
+            <option value="efectivo">Efectivo</option>
+            <option value="transferencia">Transferencia</option>
+            <option value="tarjeta">Tarjeta</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Notas del pago</label>
+          <input id="pago-notas" placeholder="Referencia, concepto, etc.">
+        </div>
+      </div>
+      <button class="btn success" onclick="registrarPago()"> Registrar Pago </button>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2><span class="icon">📊</span> Estado de Cuentas - Créditos Pendientes</h2>
+      </div>
+      <div class="stats" id="pagos-stats"></div>
+      <div id="pagos-pendientes" style="margin-top:16px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2><span class="icon">📜</span> Historial de Pagos</h2>
+      </div>
+      <div class="filters">
+        <input id="pago-buscar" placeholder="Buscar por cliente..." oninput="renderPagosHistorial()">
+        <input id="pago-desde" type="date" onchange="renderPagosHistorial()">
+        <span style="color:#5a6a8a;">a</span>
+        <input id="pago-hasta" type="date" onchange="renderPagosHistorial()">
+      </div>
+      <div id="pagos-historial"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB REPORTES ============ -->
+  <section id="tab-reportes" class="hidden">
+    <div class="card">
+      <h2><span class="icon">📈</span> Resumen General</h2>
+      <div class="stats" id="reporte-stats"></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <h2><span class="icon">📆</span> Reporte por Período</h2>
+      </div>
+      <div class="filters">
+        <select id="rep-periodo" onchange="renderReportes()">
+          <option value="hoy">Hoy</option>
+          <option value="semana">Esta semana</option>
+          <option value="mes" selected>Este mes</option>
+          <option value="rango">Rango de fechas</option>
+          <option value="todo">Todo</option>
+        </select>
+        <input id="rep-desde" type="date" class="hidden" onchange="renderReportes()">
+        <span id="rep-sep" class="hidden" style="color:#5a6a8a;">a</span>
+        <input id="rep-hasta" type="date" class="hidden" onchange="renderReportes()">
+      </div>
+      <div id="reporte-contenido"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>RafaCarnes - Los datos se guardan automáticamente en este navegador. Realiza backups periódicos.</footer>
+
+<!-- MODAL RECIBO -->
+<div id="modal-recibo-bg" class="modal-bg hidden">
+  <div class="modal" style="max-width:400px;">
+    <h3>Vista previa del recibo</h3>
+    <div id="modal-recibo-contenido" class="recibo-preview"></div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="cerrarModalRecibo()">Cerrar</button>
+      <button class="btn success" onclick="enviarReciboWhatsApp()">Enviar por WhatsApp</button>
+      <button class="btn" onclick="imprimirRecibo()">Imprimir</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL VER VENTA -->
+<div id="modal-venta-bg" class="modal-bg hidden">
+  <div class="modal" style="max-width:500px;">
+    <h3>Detalle de Venta</h3>
+    <div id="modal-venta-contenido"></div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="cerrarModalVenta()">Cerrar</button>
+      <button class="btn success" onclick="enviarVentaWhatsApp()">Enviar recibo WhatsApp</button>
+      <button class="btn" onclick="imprimirVenta()">Imprimir</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORE_KEY = 'carniceria_data_v2';
+
+let datos = {
+  inventario: [],
+  clientes: [],
+  ventas: [],
+  pagos: []
+};
+
+function cargar() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) datos = JSON.parse(raw);
+  } catch(e) {
+    datos = { inventario: [], clientes: [], ventas: [], pagos: [] };
+  }
+  if (!datos.inventario) datos.inventario = [];
+  if (!datos.clientes) datos.clientes = [];
+  if (!datos.ventas) datos.ventas = [];
+  if (!datos.pagos) datos.pagos = [];
+}
+
+function guardar() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(datos));
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function hoy() { return new Date().toISOString().slice(0, 10); }
+
+function nombreCliente(id) {
+  const c = datos.clientes.find(c => c.id === id);
+  return c ? c.nombre : '(desconocido)';
+}
+
+function fmtMoneda(n) {
+  return '$' + Number(n || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtFecha(iso) {
+  if (!iso) return '';
+  const [a, m, d] = iso.split('-');
+  return d + '/' + m + '/' + a;
+}
+
+function fmtPeso(kg) {
+  return Number(kg || 0).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kg';
+}
+
+// ===== NAVEGACION =====
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tabs = ['inventario', 'clientes', 'ventas', 'pagos', 'reportes'];
+    tabs.forEach(t => {
+      document.getElementById('tab-' + t).classList.toggle('hidden', t !== btn.dataset.tab);
+    });
+    if (btn.dataset.tab === 'inventario') renderInventario();
+    if (btn.dataset.tab === 'clientes') { renderClientes(); llenarSelectClientes(); }
+    if (btn.dataset.tab === 'ventas') { renderVentas(); llenarSelectClientes(); }
+    if (btn.dataset.tab === 'pagos') { renderPagos(); renderPagosHistorial(); }
+    if (btn.dataset.tab === 'reportes') renderReportes();
+  });
+});
+
+// ===== INVENTARIO =====
+function calcCostoTotal() {
+  const peso = parseFloat(document.getElementById('inv-peso').value) || 0;
+  const precioKg = parseFloat(document.getElementById('inv-precio-kg').value) || 0;
+  document.getElementById('inv-costo-total').value = (peso * precioKg).toFixed(2);
+}
+
+document.getElementById('inv-peso').addEventListener('input', calcCostoTotal);
+document.getElementById('inv-precio-kg').addEventListener('input', calcCostoTotal);
+
+function agregarRes() {
+  const fecha = document.getElementById('inv-fecha').value;
+  const peso = parseFloat(document.getElementById('inv-peso').value);
+  const precioKg = parseFloat(document.getElementById('inv-precio-kg').value);
+  const costoTotal = parseFloat(document.getElementById('inv-costo-total').value);
+  const notas = document.getElementById('inv-notas').value.trim();
+
+  if (!fecha) { alert('Selecciona la fecha de compra'); return; }
+  if (!peso || peso <= 0) { alert('Ingresa el peso en kilogramos'); return; }
+  if (!precioKg || precioKg <= 0) { alert('Ingresa el precio por kilogramo'); return; }
+
+  datos.inventario.push({
+    id: uid(),
+    fecha,
+    peso,
+    precioKg,
+    costoTotal,
+    notas,
+    pesoDisponible: peso
+  });
+  guardar();
+
+  document.getElementById('inv-peso').value = '';
+  document.getElementById('inv-precio-kg').value = '';
+  document.getElementById('inv-costo-total').value = '';
+  document.getElementById('inv-notas').value = '';
+  renderInventario();
+}
+
+function eliminarRes(id) {
+  if (!confirm('¿Eliminar este registro de res del inventario?')) return;
+  datos.inventario = datos.inventario.filter(i => i.id !== id);
+  guardar();
+  renderInventario();
+}
+
+function renderInventario() {
+  const busq = document.getElementById('inv-buscar').value.trim().toLowerCase();
+  const desde = document.getElementById('inv-desde').value;
+  const hasta = document.getElementById('inv-hasta').value;
+
+  let lista = datos.inventario.slice().sort((a, b) => b.fecha.localeCompare(a.fecha));
+  if (busq) lista = lista.filter(i => (i.notas || '').toLowerCase().includes(busq));
+  if (desde) lista = lista.filter(i => i.fecha >= desde);
+  if (hasta) lista = lista.filter(i => i.fecha <= hasta);
+
+  // Stats
+  const totalPeso = lista.reduce((a, i) => a + i.peso, 0);
+  const totalCosto = lista.reduce((a, i) => a + i.costoTotal, 0);
+  const pesoDisp = lista.reduce((a, i) => a + i.pesoDisponible, 0);
+  const precioProm = totalPeso > 0 ? totalCosto / totalPeso : 0;
+
+  document.getElementById('inv-stats').innerHTML = `
+    <div class="stat"><div class="value">${lista.length}</div><div class="label">Reses registradas</div></div>
+    <div class="stat"><div class="value">${fmtPeso(totalPeso)}</div><div class="label">Peso total</div></div>
+    <div class="stat"><div class="value">${fmtMoneda(totalCosto)}</div><div class="label">Costo total</div></div>
+    <div class="stat"><div class="value">${fmtPeso(pesoDisp)}</div><div class="label">Peso disponible</div></div>
+    <div class="stat"><div class="value">${fmtMoneda(precioProm)}</div><div class="label">Precio prom/kg</div></div>
+  `;
+
+  const cont = document.getElementById('inventario-lista');
+  if (!lista.length) {
+    cont.innerHTML = '<div class="empty">No hay reses registradas en el inventario.</div>';
+    return;
+  }
+
+  let html = '<table><thead><tr><th>Fecha</th><th>Peso</th><th>Precio/kg</th><th>Costo Total</th><th>Disponible</th><th>Proveedor/Notas</th><th></th></tr></thead><tbody>';
+  lista.forEach(i => {
+    html += `<tr>
+      <td>${fmtFecha(i.fecha)}</td>
+      <td>${fmtPeso(i.peso)}</td>
+      <td>${fmtMoneda(i.precioKg)}</td>
+      <td><b>${fmtMoneda(i.costoTotal)}</b></td>
+      <td>${fmtPeso(i.pesoDisponible)}</td>
+      <td>${i.notas || '-'}</td>
+      <td><div class="actions">
+        <button class="btn small danger" onclick="eliminarRes('${i.id}')">Borrar</button>
+      </div></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  cont.innerHTML = html;
+}
+
+// ===== CLIENTES =====
+function llenarSelectClientes() {
+  const opts = datos.clientes.map(c =>
+    `<option value="${c.id}">${c.nombre}${c.telefono ? ' (' + c.telefono + ')' : ''}</option>`
+  ).join('');
+  const s1 = document.getElementById('vent-cliente');
+  const prevVal = s1.value;
+  s1.innerHTML = opts || '<option value="">No hay clientes registrados</option>';
+  if (prevVal) s1.value = prevVal;
+}
+
+function agregarCliente() {
+  const nombre = document.getElementById('cli-nombre').value.trim();
+  if (!nombre) { alert('Escribe el nombre del cliente'); return; }
+  const telefono = document.getElementById('cli-telefono').value.trim();
+  const direccion = document.getElementById('cli-direccion').value.trim();
+  const tipo = document.getElementById('cli-tipo').value;
+  const notas = document.getElementById('cli-notas').value.trim();
+
+  datos.clientes.push({ id: uid(), nombre, telefono, direccion, tipo, notas });
+  guardar();
+  document.getElementById('cli-nombre').value = '';
+  document.getElementById('cli-telefono').value = '';
+  document.getElementById('cli-direccion').value = '';
+  document.getElementById('cli-notas').value = '';
+  renderClientes();
+}
+
+function eliminarCliente(id) {
+  if (!confirm('¿Eliminar este cliente y todo su historial de ventas y pagos?')) return;
+  datos.clientes = datos.clientes.filter(c => c.id !== id);
+  datos.ventas = datos.ventas.filter(v => v.clienteId !== id);
+  datos.pagos = datos.pagos.filter(p => p.clienteId !== id);
+  guardar();
+  renderClientes();
+}
+
+function verCliente(id) {
+  const c = datos.clientes.find(x => x.id === id);
+  if (!c) return;
+  const ventas = datos.ventas.filter(v => v.clienteId === id).sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const pagosCliente = datos.pagos.filter(p => p.clienteId === id).sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const totalVentas = ventas.reduce((a, v) => a + v.total, 0);
+  const totalPagos = pagosCliente.reduce((a, p) => a + p.monto, 0);
+
+  let html = `
+    <div style="margin-bottom:12px;">
+      <p><b>Nombre:</b> ${c.nombre}</p>
+      <p><b>Teléfono:</b> ${c.telefono || '-'}</p>
+      <p><b>Dirección:</b> ${c.direccion || '-'}</p>
+      <p><b>Tipo:</b> ${c.tipo}</p>
+      ${c.notas ? '<p><b>Notas:</b> ' + c.notas + '</p>' : ''}
+    </div>
+    <div class="totales-bar" style="margin-bottom:14px;">
+      <div class="item"><span>Total ventas: </span><b>${fmtMoneda(totalVentas)}</b></div>
+      <div class="item"><span>Total pagos: </span><b>${fmtMoneda(totalPagos)}</b></div>
+      <div class="item"><span>Saldo: </span><b>${fmtMoneda(totalVentas - totalPagos)}</b></div>
+    </div>
+  `;
+
+  if (ventas.length) {
+    html += '<h4 style="color:#e74c3c;margin:10px 0 6px;">Ventas</h4><table><thead><tr><th>Fecha</th><th>Total</th><th>Tipo</th><th>Cobro</th><th>Pagado</th></tr></thead><tbody>';
+    ventas.forEach(v => {
+      const pagado = datos.pagos.filter(p => p.ventaId === v.id).reduce((a, p) => a + p.monto, 0);
+      html += `<tr><td>${fmtFecha(v.fecha)}</td><td>${fmtMoneda(v.total)}</td><td><span class="badge ${v.tipo}">${v.tipo}</span></td><td>${v.cobroDescripcion || '-'}</td><td>${fmtMoneda(pagado)}</td></tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  if (pagosCliente.length) {
+    html += '<h4 style="color:#e74c3c;margin:14px 0 6px;">Pagos</h4><table><thead><tr><th>Fecha</th><th>Monto</th><th>Método</th><th>Concepto</th></tr></thead><tbody>';
+    pagosCliente.forEach(p => {
+      html += `<tr><td>${fmtFecha(p.fecha)}</td><td>${fmtMoneda(p.monto)}</td><td>${p.metodo}</td><td>${p.nota || '-'}</td></tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  document.getElementById('modal-venta-contenido').innerHTML = html;
+  document.querySelector('#modal-venta-bg h3').textContent = 'Detalle del Cliente: ' + c.nombre;
+  document.getElementById('modal-venta-bg').classList.remove('hidden');
+}
+
+function renderClientes() {
+  const busq = document.getElementById('cli-buscar').value.trim().toLowerCase();
+  const filtroTipo = document.getElementById('cli-filtro-tipo').value;
+
+  let lista = datos.clientes.slice();
+  if (busq) lista = lista.filter(c =>
+    c.nombre.toLowerCase().includes(busq) ||
+    (c.telefono || '').toLowerCase().includes(busq) ||
+    (c.direccion || '').toLowerCase().includes(busq)
+  );
+  if (filtroTipo) lista = lista.filter(c => c.tipo === filtroTipo);
+
+  const cont = document.getElementById('clientes-lista');
+  if (!lista.length) {
+    cont.innerHTML = '<div class="empty">No hay clientes registrados.</div>';
+    return;
+  }
+
+  let html = '<table><thead><tr><th>Nombre</th><th>Teléfono</th><th>Dirección</th><th>Tipo</th><th>Ventas</th><th></th></tr></thead><tbody>';
+  lista.forEach(c => {
+    const ventas = datos.ventas.filter(v => v.clienteId === c.id);
+    const total = ventas.reduce((a, v) => a + v.total, 0);
+    html += `<tr>
+      <td><b>${c.nombre}</b></td>
+      <td>${c.telefono || '-'}</td>
+      <td>${c.direccion || '-'}</td>
+      <td><span class="badge ${c.tipo === 'local' ? 'credito' : c.tipo === 'mayorista' ? 'pendiente' : 'pagado'}">${c.tipo}</span></td>
+      <td>${ventas.length} (${fmtMoneda(total)})</td>
+      <td><div class="actions">
+        <button class="btn small secondary" onclick="verCliente('${c.id}')">Ver</button>
+        <button class="btn small danger" onclick="eliminarCliente('${c.id}')">Borrar</button>
+      </div></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  cont.innerHTML = html;
+}
+
+// ===== VENTAS / FACTURAS =====
+let productosVenta = [];
+
+function toggleCreditoFields() {
+  const tipo = document.getElementById('vent-tipo').value;
+  document.getElementById('credito-fields').classList.toggle('hidden', tipo !== 'credito');
+  if (tipo === 'credito') {
+    document.getElementById('vent-frecuencia').value = '';
+    toggleFrecuenciaFields();
+  }
+}
+
+const NOMBRES_DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const NOMBRES_MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+function toggleFrecuenciaFields() {
+  const freq = document.getElementById('vent-frecuencia').value;
+  document.getElementById('freq-semanal').classList.toggle('hidden', freq !== 'semanal');
+  document.getElementById('freq-quincenal').classList.toggle('hidden', freq !== 'quincenal');
+  document.getElementById('freq-mensual').classList.toggle('hidden', freq !== 'mensual');
+  document.getElementById('freq-personalizado').classList.toggle('hidden', freq !== 'personalizado');
+  actualizarCronogramaPreview();
+}
+
+function obtenerCobroInfo() {
+  const freq = document.getElementById('vent-frecuencia').value;
+  if (!freq) return null;
+
+  const info = { frecuencia: freq, dias: [], descripcion: '' };
+
+  if (freq === 'semanal') {
+    const checked = document.querySelector('input[name="dia-semana"]:checked');
+    if (!checked) return null;
+    const dia = parseInt(checked.value);
+    info.dias = [dia];
+    info.descripcion = 'Cada ' + NOMBRES_DIAS[dia];
+  } else if (freq === 'quincenal') {
+    const d1 = document.getElementById('quin-dia1').checked;
+    const d15 = document.getElementById('quin-dia15').checked;
+    if (!d1 && !d15) return null;
+    info.dias = [];
+    if (d1) info.dias.push(1);
+    if (d15) info.dias.push(15);
+    if (d1 && d15) info.descripcion = 'Días 1 y 15 de cada mes';
+    else if (d1) info.descripcion = 'Día 1 de cada mes';
+    else info.descripcion = 'Día 15 de cada mes';
+  } else if (freq === 'mensual') {
+    const diaMes = parseInt(document.getElementById('vent-dia-mes').value);
+    info.dias = [diaMes];
+    info.descripcion = 'Día ' + diaMes + ' de cada mes';
+  } else if (freq === 'personalizado') {
+    const checks = document.querySelectorAll('.dia-pers:checked');
+    if (!checks.length) return null;
+    info.dias = Array.from(checks).map(c => parseInt(c.value)).sort((a, b) => a - b);
+    const cada = document.getElementById('vent-pers-frecuencia').value;
+    info.cadaSemanas = parseInt(cada);
+    const nombres = info.dias.map(d => NOMBRES_DIAS[d]).join(', ');
+    info.descripcion = (cada === '1' ? 'Cada semana' : 'Cada ' + cada + ' semanas') + ' - ' + nombres;
+  }
+
+  return info;
+}
+
+function calcularProximasFechas(fechaVenta, cobroInfo, cantidad) {
+  if (!cobroInfo || !fechaVenta) return [];
+  const fecha = new Date(fechaVenta + 'T00:00:00');
+  const fechas = [];
+
+  if (cobroInfo.frecuencia === 'semanal') {
+    const diaObj = cobroInfo.dias[0];
+    let actual = new Date(fecha);
+    actual.setDate(actual.getDate() + 1);
+    while (actual.getDay() !== diaObj) actual.setDate(actual.getDate() + 1);
+    for (let i = 0; i < cantidad; i++) {
+      fechas.push(actual.toISOString().slice(0, 10));
+      actual.setDate(actual.getDate() + 7);
+    }
+  } else if (cobroInfo.frecuencia === 'quincenal') {
+    let actual = new Date(fecha);
+    actual.setDate(actual.getDate() + 1);
+    for (let i = 0; i < cantidad && i < 12; i++) {
+      let mejor = null;
+      for (let m = 0; m < 3; m++) {
+        for (const d of cobroInfo.dias) {
+          const candidata = new Date(actual.getFullYear(), actual.getMonth() + m, d);
+          if (candidata <= actual) continue;
+          if (!mejor || candidata < mejor) mejor = candidata;
+        }
+      }
+      if (mejor) {
+        fechas.push(mejor.toISOString().slice(0, 10));
+        actual = new Date(mejor);
+        actual.setDate(actual.getDate() + 1);
+      }
+    }
+  } else if (cobroInfo.frecuencia === 'mensual') {
+    const diaMes = cobroInfo.dias[0];
+    let actual = new Date(fecha);
+    actual.setDate(actual.getDate() + 1);
+    for (let i = 0; i < cantidad; i++) {
+      let mejor = null;
+      for (let m = 0; m < 3; m++) {
+        const candidata = new Date(actual.getFullYear(), actual.getMonth() + m, diaMes);
+        if (candidata <= actual) continue;
+        if (!mejor || candidata < mejor) mejor = candidata;
+      }
+      if (mejor) {
+        fechas.push(mejor.toISOString().slice(0, 10));
+        actual = new Date(mejor);
+        actual.setDate(actual.getDate() + 1);
+      }
+    }
+  } else if (cobroInfo.frecuencia === 'personalizado') {
+    const cada = cobroInfo.cadaSemanas || 1;
+    let actual = new Date(fecha);
+    actual.setDate(actual.getDate() + 1);
+    let intentos = 0;
+    while (fechas.length < cantidad && intentos < 200) {
+      if (cobroInfo.dias.includes(actual.getDay())) {
+        fechas.push(actual.toISOString().slice(0, 10));
+        actual.setDate(actual.getDate() + 1);
+        intentos++;
+        let saltos = (cada - 1) * 7;
+        while (saltos > 0) { actual.setDate(actual.getDate() + 1); saltos--; }
+      } else {
+        actual.setDate(actual.getDate() + 1);
+      }
+      intentos++;
+    }
+  }
+
+  return fechas;
+}
+
+function actualizarCronogramaPreview() {
+  const cont = document.getElementById('cronograma-preview');
+  const cobroInfo = obtenerCobroInfo();
+  if (!cobroInfo) { cont.classList.add('hidden'); return; }
+
+  const fechaVenta = document.getElementById('vent-fecha').value || hoy();
+  const fechas = calcularProximasFechas(fechaVenta, cobroInfo, 6);
+
+  cont.classList.remove('hidden');
+  let html = '<div class="cronograma-box"><h4>Próximas fechas de cobro</h4><p style="font-size:.82rem;color:#94a3b8;margin-bottom:8px;">' + cobroInfo.descripcion + '</p>';
+
+  if (fechas.length) {
+    html += fechas.map(f => '<span class="fecha-item">' + fmtFecha(f) + '</span>').join('');
+  } else {
+    html += '<p style="color:#5a6a8a;font-size:.82rem;">Selecciona los días de cobro para ver el cronograma.</p>';
+  }
+  html += '</div>';
+  cont.innerHTML = html;
+}
+
+document.getElementById('vent-fecha').addEventListener('change', actualizarCronogramaPreview);
+document.addEventListener('change', e => {
+  if (e.target.name === 'dia-semana' || e.target.classList.contains('dia-pers') ||
+      e.target.id === 'vent-dia-mes' || e.target.id === 'vent-pers-frecuencia' ||
+      e.target.id === 'quin-dia1' || e.target.id === 'quin-dia15') {
+    actualizarCronogramaPreview();
+  }
+});
+
+function agregarProductoVenta() {
+  const id = uid();
+  productosVenta.push({ id, corte: '', cantidad: 0, precio: 0, unidad: 'kg' });
+  renderProductosVenta();
+}
+
+function eliminarProductoVenta(id) {
+  productosVenta = productosVenta.filter(p => p.id !== id);
+  renderProductosVenta();
+}
+
+function actualizarProductoVenta(id, campo, valor) {
+  const p = productosVenta.find(x => x.id === id);
+  if (p) {
+    p[campo] = valor;
+    if (campo === 'cantidad' || campo === 'precio') {
+      renderTotalesVenta();
+    }
+  }
+}
+
+function renderProductosVenta() {
+  const cont = document.getElementById('venta-productos');
+  if (!productosVenta.length) {
+    cont.innerHTML = '<div class="empty" style="padding:12px;">Haz clic en "+ Agregar corte" para agregar productos a la venta.</div>';
+    renderTotalesVenta();
+    return;
+  }
+
+  let html = '';
+  productosVenta.forEach(p => {
+    html += `
+      <div class="producto-item">
+        <div class="form-group">
+          <label>Corte / Producto</label>
+          <input value="${p.corte}" placeholder="Ej: Costilla, Filete, Lomo..." onchange="actualizarProductoVenta('${p.id}','corte',this.value)">
+        </div>
+        <div class="form-group" style="flex:0 1 80px;">
+          <label>Cantidad</label>
+          <input type="number" min="0" step="0.1" value="${p.cantidad}" onchange="actualizarProductoVenta('${p.id}','cantidad',parseFloat(this.value)||0)" oninput="actualizarProductoVenta('${p.id}','cantidad',parseFloat(this.value)||0)">
+        </div>
+        <div class="form-group" style="flex:0 1 70px;">
+          <label>Unidad</label>
+          <select onchange="actualizarProductoVenta('${p.id}','unidad',this.value)">
+            <option value="kg" ${p.unidad === 'kg' ? 'selected' : ''}>kg</option>
+            <option value="pza" ${p.unidad === 'pza' ? 'selected' : ''}>pza</option>
+            <option value="lb" ${p.unidad === 'lb' ? 'selected' : ''}>lb</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex:0 1 120px;">
+          <label>Precio unitario ($)</label>
+          <input type="number" min="0" step="0.01" value="${p.precio}" onchange="actualizarProductoVenta('${p.id}','precio',parseFloat(this.value)||0)" oninput="actualizarProductoVenta('${p.id}','precio',parseFloat(this.value)||0)">
+        </div>
+        <div class="form-group" style="flex:0 1 110px;">
+          <label>Subtotal</label>
+          <input value="${fmtMoneda(p.cantidad * p.precio)}" readonly style="background:#1a2744;color:#4ade80;font-weight:700;border:none;text-align:right;">
+        </div>
+        <button class="btn-remove" onclick="eliminarProductoVenta('${p.id}')">&times;</button>
+      </div>
+    `;
+  });
+  cont.innerHTML = html;
+  renderTotalesVenta();
+}
+
+function renderTotalesVenta() {
+  const total = productosVenta.reduce((a, p) => a + (p.cantidad * p.precio), 0);
+  document.getElementById('venta-totales').innerHTML = `
+    <div class="item"><span>Total: </span><b>${fmtMoneda(total)}</b></div>
+    <div class="item"><span>Productos: </span><b>${productosVenta.length}</b></div>
+  `;
+  const montoTotalEl = document.getElementById('vent-monto-total');
+  if (montoTotalEl) montoTotalEl.value = total.toFixed(2);
+}
+
+function guardarVenta(enviarWhatsApp = false) {
+  const clienteId = document.getElementById('vent-cliente').value;
+  const fecha = document.getElementById('vent-fecha').value;
+  const tipo = document.getElementById('vent-tipo').value;
+  const vencimiento = document.getElementById('vent-vencimiento').value;
+
+  if (!clienteId) { alert('Selecciona un cliente'); return; }
+  if (!fecha) { alert('Selecciona la fecha de venta'); return; }
+  if (!productosVenta.length) { alert('Agrega al menos un producto/corte'); return; }
+
+  let cobroInfo = null;
+  let proximasFechas = [];
+  if (tipo === 'credito') {
+    cobroInfo = obtenerCobroInfo();
+    if (!cobroInfo) { alert('Selecciona la frecuencia y los días de cobro'); return; }
+    proximasFechas = calcularProximasFechas(fecha, cobroInfo, 12);
+  }
+
+  const total = productosVenta.reduce((a, p) => a + (p.cantidad * p.precio), 0);
+
+  const venta = {
+    id: uid(),
+    clienteId,
+    fecha,
+    tipo,
+    productos: productosVenta.map(p => ({ ...p })),
+    total,
+    vencimiento: tipo === 'credito' ? (vencimiento || null) : null,
+    cobroFrecuencia: cobroInfo ? cobroInfo.frecuencia : null,
+    cobroDias: cobroInfo ? cobroInfo.dias : [],
+    cobroDescripcion: cobroInfo ? cobroInfo.descripcion : null,
+    cobroCadaSemanas: cobroInfo && cobroInfo.frecuencia === 'personalizado' ? cobroInfo.cadaSemanas : null,
+    proximasFechasCobro: proximasFechas,
+    estado: tipo === 'contado' ? 'pagado' : 'pendiente'
+  };
+
+  datos.ventas.push(venta);
+  guardar();
+
+  productosVenta = [];
+  renderProductosVenta();
+  document.getElementById('vent-fecha').value = hoy();
+  document.getElementById('vent-vencimiento').value = '';
+  document.getElementById('vent-tipo').value = 'contado';
+  document.getElementById('vent-frecuencia').value = '';
+  toggleCreditoFields();
+  renderVentas();
+
+  if (enviarWhatsApp) {
+    mostrarReciboWhatsApp(venta);
+  } else {
+    alert('Venta guardada correctamente.');
+  }
+}
+
+function eliminarVenta(id) {
+  if (!confirm('¿Eliminar esta venta y todos sus pagos asociados?')) return;
+  datos.ventas = datos.ventas.filter(v => v.id !== id);
+  datos.pagos = datos.pagos.filter(p => p.ventaId !== id);
+  guardar();
+  renderVentas();
+}
+
+function verDetalleVenta(id) {
+  const v = datos.ventas.find(x => x.id === id);
+  if (!v) return;
+  const c = datos.clientes.find(x => x.id === v.clienteId);
+  const pagos = datos.pagos.filter(p => p.ventaId === id);
+  const totalPagado = pagos.reduce((a, p) => a + p.monto, 0);
+  const saldo = v.total - totalPagado;
+
+  let html = `
+    <div style="margin-bottom:12px;">
+      <p><b>Cliente:</b> ${c ? c.nombre : '-'}</p>
+      ${c && c.telefono ? '<p><b>Teléfono:</b> ' + c.telefono + '</p>' : ''}
+      ${c && c.direccion ? '<p><b>Dirección:</b> ' + c.direccion + '</p>' : ''}
+      <p><b>Fecha:</b> ${fmtFecha(v.fecha)}</p>
+      <p><b>Tipo:</b> <span class="badge ${v.tipo}">${v.tipo}</span></p>
+      ${v.cobroDescripcion ? '<p><b>Cobro:</b> ' + v.cobroDescripcion + '</p>' : ''}
+      ${v.vencimiento ? '<p><b>Límite crédito:</b> ' + fmtFecha(v.vencimiento) + '</p>' : ''}
+    </div>
+    <h4 style="color:#e74c3c;margin:10px 0 6px;">Productos</h4>
+    <table><thead><tr><th>Corte</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr></thead><tbody>
+  `;
+  v.productos.forEach(p => {
+    html += `<tr><td>${p.corte}</td><td>${p.cantidad} ${p.unidad}</td><td>${fmtMoneda(p.precio)}</td><td>${fmtMoneda(p.cantidad * p.precio)}</td></tr>`;
+  });
+  html += `</tbody></table>`;
+
+  html += `<div class="totales-bar" style="margin-top:12px;">
+    <div class="item"><span>Total: </span><b>${fmtMoneda(v.total)}</b></div>
+    <div class="item"><span>Pagado: </span><b style="color:#4ade80;">${fmtMoneda(totalPagado)}</b></div>
+    <div class="item"><span>Saldo: </span><b style="color:${saldo > 0 ? '#fca5a5' : '#4ade80'};">${fmtMoneda(saldo)}</b></div>
+  </div>`;
+
+  if (v.proximasFechasCobro && v.proximasFechasCobro.length) {
+    html += '<div class="cronograma-box" style="margin-top:12px;"><h4>Cronograma de cobros</h4>';
+    html += v.proximasFechasCobro.slice(0, 8).map(f => {
+      const esPasada = f < hoy();
+      return '<span class="fecha-item' + (esPasada ? ' pasada' : '') + '">' + fmtFecha(f) + '</span>';
+    }).join('');
+    html += '</div>';
+  }
+
+  if (pagos.length) {
+    html += '<h4 style="color:#e74c3c;margin:14px 0 6px;">Pagos realizados</h4><table><thead><tr><th>Fecha</th><th>Monto</th><th>Método</th></tr></thead><tbody>';
+    pagos.forEach(p => {
+      html += `<tr><td>${fmtFecha(p.fecha)}</td><td>${fmtMoneda(p.monto)}</td><td>${p.metodo}</td></tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  document.getElementById('modal-venta-contenido').innerHTML = html;
+  document.querySelector('#modal-venta-bg h3').textContent = 'Detalle de Venta';
+  currentVentaId = id;
+  document.getElementById('modal-venta-bg').classList.remove('hidden');
+}
+
+let currentVentaId = null;
+let currentReciboVenta = null;
+
+function renderVentas() {
+  const busq = document.getElementById('vent-buscar').value.trim().toLowerCase();
+  const filtroTipo = document.getElementById('vent-filtro-tipo').value;
+  const desde = document.getElementById('vent-desde').value;
+  const hasta = document.getElementById('vent-hasta').value;
+
+  let lista = datos.ventas.slice().sort((a, b) => b.fecha.localeCompare(a.fecha));
+  if (busq) lista = lista.filter(v => nombreCliente(v.clienteId).toLowerCase().includes(busq));
+  if (filtroTipo) lista = lista.filter(v => v.tipo === filtroTipo);
+  if (desde) lista = lista.filter(v => v.fecha >= desde);
+  if (hasta) lista = lista.filter(v => v.fecha <= hasta);
+
+  const cont = document.getElementById('ventas-lista');
+  if (!lista.length) {
+    cont.innerHTML = '<div class="empty">No hay ventas registradas.</div>';
+    return;
+  }
+
+  let html = '<table><thead><tr><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Tipo</th><th>Cobro</th><th>Estado</th><th></th></tr></thead><tbody>';
+  lista.forEach(v => {
+    const pagado = datos.pagos.filter(p => p.ventaId === v.id).reduce((a, p) => a + p.monto, 0);
+    const saldo = v.total - pagado;
+    let estado = v.tipo === 'contado' ? 'pagado' : (saldo <= 0 ? 'pagado' : (v.vencimiento && v.vencimiento < hoy() && saldo > 0 ? 'vencido' : (pagado > 0 ? 'parcial' : 'pendiente')));
+
+    html += `<tr>
+      <td>${fmtFecha(v.fecha)}</td>
+      <td>${nombreCliente(v.clienteId)}</td>
+      <td>${v.productos.length} corte(s)</td>
+      <td><b>${fmtMoneda(v.total)}</b></td>
+      <td><span class="badge ${v.tipo}">${v.tipo}</span></td>
+      <td>${v.cobroDescripcion || '-'}</td>
+      <td><span class="badge ${estado}">${estado}</span></td>
+      <td><div class="actions">
+        <button class="btn small secondary" onclick="verDetalleVenta('${v.id}')">Ver</button>
+        <button class="btn small" onclick="mostrarReciboWhatsApp(datos.ventas.find(x=>x.id==='${v.id}'))">WhatsApp</button>
+        <button class="btn small danger" onclick="eliminarVenta('${v.id}')">Borrar</button>
+      </div></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  cont.innerHTML = html;
+}
+
+// ===== PAGOS =====
+function renderPagos() {
+  const sel = document.getElementById('pago-venta');
+  const creditos = datos.ventas.filter(v => {
+    if (v.tipo !== 'credito') return false;
+    const pagado = datos.pagos.filter(p => p.ventaId === v.id).reduce((a, p) => a + p.monto, 0);
+    return pagado < v.total;
+  }).sort((a, b) => a.fecha.localeCompare(b.fecha));
+
+  const prevVal = sel.value;
+  sel.innerHTML = '<option value="">Seleccionar venta pendiente...</option>';
+  creditos.forEach(v => {
+    const pagado = datos.pagos.filter(p => p.ventaId === v.id).reduce((a, p) => a + p.monto, 0);
+    const saldo = v.total - pagado;
+    sel.innerHTML += `<option value="${v.id}">${fmtFecha(v.fecha)} - ${nombreCliente(v.clienteId)} - Saldo: ${fmtMoneda(saldo)}</option>`;
+  });
+  if (prevVal) sel.value = prevVal;
+
+  sel.addEventListener('change', mostrarInfoVentaPendiente);
+  mostrarInfoVentaPendiente();
+
+  // Stats
+  const totalCreditos = creditos.reduce((a, v) => {
+    const pagado = datos.pagos.filter(p => p.ventaId === v.id).reduce((s, p) => s + p.monto, 0);
+    return a + (v.total - pagado);
+  }, 0);
+
+  const vencidos = creditos.filter(v => v.vencimiento && v.vencimiento < hoy());
+  const totalVencido = vencidos.reduce((a, v) => {
+    const pagado = datos.pagos.filter(p => p.ventaId === v.id).reduce((s, p) => s + p.monto, 0);
+    return a + (v.total - pagado);
+  }, 0);
+
+  document.getElementById('pagos-stats').innerHTML = `
+    <div class="stat"><div class="value">${creditos.length}</div><div class="label">Créditos pendientes</div></div>
+    <div class="stat"><div class="value">${fmtMoneda(totalCreditos)}</div><div class="label">Total por cobrar</div></div>
+    <div class="stat"><div class="value">${vencidos.length}</div><div class="label">Vencidos</div></div>
+    <div class="stat"><div class="value">${fmtMoneda(totalVencido)}</div><div class="label">Monto vencido</div></div>
+  `;
+
+  // Lista de pendientes
+  const cont = document.getElementById('pagos-pendientes');
+  if (!creditos.length) {
+    cont.innerHTML = '<div class="empty">No hay créditos pendientes. Todo al día.</div>';
+    return;
+  }
+
+  let html = '<table><thead><tr><th>Fecha venta</th><th>Cliente</th><th>Total</th><th>Pagado</th><th>Saldo</th><th>Cobro</th><th>Próx. fecha</th><th>Estado</th></tr></thead><tbody>';
+  creditos.forEach(v => {
+    const pagado = datos.pagos.filter(p => p.ventaId === v.id).reduce((a, p) => a + p.monto, 0);
+    const saldo = v.total - pagado;
+    const estado = v.vencimiento && v.vencimiento < hoy() ? 'vencido' : (pagado > 0 ? 'parcial' : 'pendiente');
+    const proximaFecha = v.proximasFechasCobro ? v.proximasFechasCobro.find(f => f >= hoy()) : null;
+    html += `<tr>
+      <td>${fmtFecha(v.fecha)}</td>
+      <td>${nombreCliente(v.clienteId)}</td>
+      <td>${fmtMoneda(v.total)}</td>
+      <td style="color:#4ade80;">${fmtMoneda(pagado)}</td>
+      <td style="color:#fca5a5;"><b>${fmtMoneda(saldo)}</b></td>
+      <td>${v.cobroDescripcion || '-'}</td>
+      <td>${proximaFecha ? fmtFecha(proximaFecha) : '-'}</td>
+      <td><span class="badge ${estado}">${estado}</span></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  cont.innerHTML = html;
+}
+
+function mostrarInfoVentaPendiente() {
+  const ventaId = document.getElementById('pago-venta').value;
+  const cont = document.getElementById('pago-info-venta');
+  if (!ventaId) { cont.classList.add('hidden'); return; }
+
+  const v = datos.ventas.find(x => x.id === ventaId);
+  if (!v) return;
+  const pagado = datos.pagos.filter(p => p.ventaId === v.id).reduce((a, p) => a + p.monto, 0);
+  const saldo = v.total - pagado;
+
+  cont.classList.remove('hidden');
+  cont.innerHTML = `
+    <div class="totales-bar">
+      <div class="item"><span>Total venta: </span><b>${fmtMoneda(v.total)}</b></div>
+      <div class="item"><span>Pagado: </span><b style="color:#4ade80;">${fmtMoneda(pagado)}</b></div>
+      <div class="item"><span>Saldo pendiente: </span><b style="color:#fca5a5;">${fmtMoneda(saldo)}</b></div>
+    </div>
+  `;
+  document.getElementById('pago-monto').max = saldo;
+  document.getElementById('pago-monto').placeholder = 'Máximo: ' + fmtMoneda(saldo);
+}
+
+function registrarPago() {
+  const ventaId = document.getElementById('pago-venta').value;
+  const monto = parseFloat(document.getElementById('pago-monto').value);
+  const fecha = document.getElementById('pago-fecha').value;
+  const metodo = document.getElementById('pago-metodo').value;
+  const nota = document.getElementById('pago-notas').value.trim();
+
+  if (!ventaId) { alert('Selecciona una venta pendiente'); return; }
+  if (!monto || monto <= 0) { alert('Ingresa un monto válido'); return; }
+  if (!fecha) { alert('Selecciona la fecha del pago'); return; }
+
+  const v = datos.ventas.find(x => x.id === ventaId);
+  const pagado = datos.pagos.filter(p => p.ventaId === ventaId).reduce((a, p) => a + p.monto, 0);
+  const saldo = v.total - pagado;
+
+  if (monto > saldo + 0.01) {
+    alert('El monto excede el saldo pendiente de ' + fmtMoneda(saldo));
+    return;
+  }
+
+  datos.pagos.push({
+    id: uid(),
+    ventaId,
+    clienteId: v.clienteId,
+    monto,
+    fecha,
+    metodo,
+    nota
+  });
+  guardar();
+
+  document.getElementById('pago-monto').value = '';
+  document.getElementById('pago-notas').value = '';
+
+  const nuevoPagado = pagado + monto;
+  if (nuevoPagado >= v.total - 0.01) {
+    v.estado = 'pagado';
+    guardar();
+    alert('Pago registrado. La venta está completamente liquidada.');
+  } else {
+    alert('Pago registrado. Saldo restante: ' + fmtMoneda(v.total - nuevoPagado));
+  }
+
+  renderPagos();
+  renderPagosHistorial();
+}
+
+function eliminarPago(id) {
+  if (!confirm('¿Eliminar este pago?')) return;
+  const pago = datos.pagos.find(p => p.id === id);
+  datos.pagos = datos.pagos.filter(p => p.id !== id);
+  if (pago) {
+    const v = datos.ventas.find(x => x.id === pago.ventaId);
+    if (v) {
+      v.estado = 'pendiente';
+    }
+  }
+  guardar();
+  renderPagos();
+  renderPagosHistorial();
+}
+
+function renderPagosHistorial() {
+  const busq = document.getElementById('pago-buscar').value.trim().toLowerCase();
+  const desde = document.getElementById('pago-desde').value;
+  const hasta = document.getElementById('pago-hasta').value;
+
+  let lista = datos.pagos.slice().sort((a, b) => b.fecha.localeCompare(a.fecha));
+  if (busq) lista = lista.filter(p => nombreCliente(p.clienteId).toLowerCase().includes(busq));
+  if (desde) lista = lista.filter(p => p.fecha >= desde);
+  if (hasta) lista = lista.filter(p => p.fecha <= hasta);
+
+  const cont = document.getElementById('pagos-historial');
+  if (!lista.length) {
+    cont.innerHTML = '<div class="empty">No hay pagos registrados en este período.</div>';
+    return;
+  }
+
+  const totalPagos = lista.reduce((a, p) => a + p.monto, 0);
+
+  let html = `<div class="totales-bar" style="margin-bottom:14px;">
+    <div class="item"><span>Total cobrado: </span><b style="color:#4ade80;">${fmtMoneda(totalPagos)}</b></div>
+    <div class="item"><span>Pagos: </span><b>${lista.length}</b></div>
+  </div>`;
+
+  html += '<table><thead><tr><th>Fecha pago</th><th>Cliente</th><th>Monto</th><th>Método</th><th>Concepto</th><th></th></tr></thead><tbody>';
+  lista.forEach(p => {
+    html += `<tr>
+      <td>${fmtFecha(p.fecha)}</td>
+      <td>${nombreCliente(p.clienteId)}</td>
+      <td style="color:#4ade80;"><b>${fmtMoneda(p.monto)}</b></td>
+      <td>${p.metodo}</td>
+      <td>${p.nota || '-'}</td>
+      <td><button class="btn small danger" onclick="eliminarPago('${p.id}')">Borrar</button></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  cont.innerHTML = html;
+}
+
+// ===== RECIBOS =====
+function generarTextoRecibo(venta) {
+  const c = datos.clientes.find(x => x.id === venta.clienteId);
+  const pagos = datos.pagos.filter(p => p.ventaId === venta.id);
+  const totalPagado = pagos.reduce((a, p) => a + p.monto, 0);
+  const saldo = venta.total - totalPagado;
+
+  let texto = '═════════════════════════\n';
+  texto += '      RAFA CARNES\n';
+  texto += '═════════════════════════\n\n';
+  texto += `Fecha: ${fmtFecha(venta.fecha)}\n`;
+  texto += `Cliente: ${c ? c.nombre : '-'}\n`;
+  if (c && c.telefono) texto += `Tel: ${c.telefono}\n`;
+  if (c && c.direccion) texto += `Dir: ${c.direccion}\n`;
+  texto += `Tipo: ${venta.tipo === 'contado' ? 'CONTADO' : 'CRÉDITO'}\n`;
+  if (venta.cobroDescripcion) texto += `Cobro: ${venta.cobroDescripcion}\n`;
+  if (venta.vencimiento) texto += `Límite crédito: ${fmtFecha(venta.vencimiento)}\n`;
+  texto += '\n─────────────────────────\n';
+  texto += 'PRODUCTOS:\n';
+  texto += '─────────────────────────\n';
+
+  venta.productos.forEach(p => {
+    const sub = p.cantidad * p.precio;
+    texto += `${p.corte}\n`;
+    texto += `  ${p.cantidad} ${p.unidad} x ${fmtMoneda(p.precio)} = ${fmtMoneda(sub)}\n`;
+  });
+
+  texto += '─────────────────────────\n';
+  texto += `TOTAL: ${fmtMoneda(venta.total)}\n`;
+
+  if (venta.tipo === 'credito') {
+    texto += `PAGADO: ${fmtMoneda(totalPagado)}\n`;
+    texto += `SALDO: ${fmtMoneda(saldo)}\n`;
+    if (venta.proximasFechasCobro && venta.proximasFechasCobro.length) {
+      texto += '\nFECHAS DE COBRO:\n';
+      venta.proximasFechasCobro.slice(0, 8).forEach(f => {
+        texto += `  ${fmtFecha(f)}${f < hoy() ? ' (pasada)' : ''}\n`;
+      });
+    }
+  }
+
+  texto += '\n═════════════════════════\n';
+  texto += '   ¡Gracias por su compra!\n';
+  texto += '═════════════════════════\n';
+
+  return texto;
+}
+
+function generarHTMLRecibo(venta) {
+  const c = datos.clientes.find(x => x.id === venta.clienteId);
+  const pagos = datos.pagos.filter(p => p.ventaId === venta.id);
+  const totalPagado = pagos.reduce((a, p) => a + p.monto, 0);
+  const saldo = venta.total - totalPagado;
+
+  let html = `<div class="recibo-header"><h4>🥩 RAFA CARNES</h4><p>Recibo de Venta</p></div>`;
+  html += `<p><b>Fecha:</b> ${fmtFecha(venta.fecha)}</p>`;
+  html += `<p><b>Cliente:</b> ${c ? c.nombre : '-'}</p>`;
+  if (c && c.telefono) html += `<p><b>Tel:</b> ${c.telefono}</p>`;
+  if (c && c.direccion) html += `<p><b>Dir:</b> ${c.direccion}</p>`;
+  html += `<p><b>Tipo:</b> ${venta.tipo === 'contado' ? 'Contado' : 'Crédito'}</p>`;
+  if (venta.cobroDescripcion) html += `<p><b>Cobro:</b> ${venta.cobroDescripcion}</p>`;
+  if (venta.vencimiento) html += `<p><b>Límite crédito:</b> ${fmtFecha(venta.vencimiento)}</p>`;
+  html += '<hr style="border:none;border-top:1px dashed #ccc;margin:10px 0;">';
+
+  html += '<table style="width:100%;font-size:12px;border-collapse:collapse;"><thead><tr><th style="text-align:left;border-bottom:1px solid #ccc;padding:4px;">Corte</th><th style="text-align:right;border-bottom:1px solid #ccc;padding:4px;">Cant.</th><th style="text-align:right;border-bottom:1px solid #ccc;padding:4px;">Precio</th><th style="text-align:right;border-bottom:1px solid #ccc;padding:4px;">Subtotal</th></tr></thead><tbody>';
+  venta.productos.forEach(p => {
+    html += `<tr><td style="padding:3px 4px;">${p.corte}</td><td style="text-align:right;padding:3px 4px;">${p.cantidad} ${p.unidad}</td><td style="text-align:right;padding:3px 4px;">${fmtMoneda(p.precio)}</td><td style="text-align:right;padding:3px 4px;">${fmtMoneda(p.cantidad * p.precio)}</td></tr>`;
+  });
+  html += '</tbody></table>';
+
+  html += '<hr style="border:none;border-top:1px dashed #ccc;margin:10px 0;">';
+  html += `<div class="recibo-total">TOTAL: ${fmtMoneda(venta.total)}</div>`;
+
+  if (venta.tipo === 'credito') {
+    html += `<p style="color:#27ae60;">Pagado: ${fmtMoneda(totalPagado)}</p>`;
+    html += `<p style="color:#c0392b;font-weight:bold;">Saldo: ${fmtMoneda(saldo)}</p>`;
+    if (venta.proximasFechasCobro && venta.proximasFechasCobro.length) {
+      html += '<div style="margin-top:10px;padding-top:8px;border-top:1px dashed #ccc;">';
+      html += '<p style="font-weight:bold;margin-bottom:4px;">Fechas de cobro:</p>';
+      html += venta.proximasFechasCobro.slice(0, 8).map(f =>
+        '<span style="display:inline-block;padding:2px 8px;margin:2px;border:1px solid #c0392b;border-radius:4px;font-size:11px;' + (f < hoy() ? 'color:#999;text-decoration:line-through;' : 'color:#c0392b;') + '">' + fmtFecha(f) + '</span>'
+      ).join('');
+      html += '</div>';
+    }
+  }
+
+  html += '<div class="recibo-footer">¡Gracias por su compra!</div>';
+  return html;
+}
+
+function mostrarReciboWhatsApp(venta) {
+  if (!venta) return;
+  currentReciboVenta = venta;
+  document.getElementById('modal-recibo-contenido').innerHTML = generarHTMLRecibo(venta);
+  document.getElementById('modal-recibo-bg').classList.remove('hidden');
+}
+
+function cerrarModalRecibo() {
+  document.getElementById('modal-recibo-bg').classList.add('hidden');
+}
+
+function enviarReciboWhatsApp() {
+  if (!currentReciboVenta) return;
+  const c = datos.clientes.find(x => x.id === currentReciboVenta.clienteId);
+  if (!c || !c.telefono) {
+    alert('El cliente no tiene número de teléfono registrado.');
+    return;
+  }
+
+  const texto = generarTextoRecibo(currentReciboVenta);
+  const telefono = c.telefono.replace(/[^0-9]/g, '');
+  const url = `https://wa.me/${telefono}?text=${encodeURIComponent(texto)}`;
+  window.open(url, '_blank');
+  cerrarModalRecibo();
+}
+
+function imprimirRecibo() {
+  if (!currentReciboVenta) return;
+  const w = window.open('', '_blank', 'width=400,height=600');
+  if (!w) { alert('Permite ventanas emergentes para imprimir.'); return; }
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Recibo</title><style>
+    body{font-family:'Courier New',monospace;padding:20px;font-size:13px;color:#333;}
+    h4{text-align:center;margin:0 0 8px;color:#c0392b;}
+    .center{text-align:center;}
+    table{width:100%;border-collapse:collapse;font-size:12px;}
+    td{padding:3px 0;}
+    .right{text-align:right;}
+    hr{border:none;border-top:1px dashed #999;margin:10px 0;}
+    .total{font-weight:bold;font-size:15px;border-top:2px dashed #999;padding-top:8px;margin-top:8px;}
+  </style></head><body>`);
+  w.document.write(generarHTMLRecibo(currentReciboVenta));
+  w.document.write('</body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(() => w.print(), 300);
+}
+
+function cerrarModalVenta() {
+  document.getElementById('modal-venta-bg').classList.add('hidden');
+}
+
+function enviarVentaWhatsApp() {
+  const v = datos.ventas.find(x => x.id === currentVentaId);
+  if (v) {
+    cerrarModalVenta();
+    mostrarReciboWhatsApp(v);
+  }
+}
+
+function imprimirVenta() {
+  const v = datos.ventas.find(x => x.id === currentVentaId);
+  if (v) {
+    currentReciboVenta = v;
+    cerrarModalVenta();
+    imprimirRecibo();
+  }
+}
+
+// ===== REPORTES =====
+function obtenerRangoReporte() {
+  const periodo = document.getElementById('rep-periodo').value;
+  const hoyD = new Date();
+  const toISO = d => d.toISOString().slice(0, 10);
+  let desde = '', hasta = '';
+
+  if (periodo === 'hoy') { desde = toISO(hoyD); hasta = toISO(hoyD); }
+  if (periodo === 'semana') {
+    const dia = (hoyD.getDay() + 6) % 7;
+    const lunes = new Date(hoyD); lunes.setDate(hoyD.getDate() - dia);
+    desde = toISO(lunes); hasta = toISO(hoyD);
+  }
+  if (periodo === 'mes') {
+    desde = toISO(new Date(hoyD.getFullYear(), hoyD.getMonth(), 1));
+    hasta = toISO(hoyD);
+  }
+  if (periodo === 'rango') {
+    desde = document.getElementById('rep-desde').value || '0000-01-01';
+    hasta = document.getElementById('rep-hasta').value || '9999-12-31';
+  }
+  return { desde, hasta };
+}
+
+document.getElementById('rep-periodo').addEventListener('change', () => {
+  const rango = document.getElementById('rep-periodo').value === 'rango';
+  document.getElementById('rep-desde').classList.toggle('hidden', !rango);
+  document.getElementById('rep-sep').classList.toggle('hidden', !rango);
+  document.getElementById('rep-hasta').classList.toggle('hidden', !rango);
+});
+
+function renderReportes() {
+  // Stats generales
+  const totalInventario = datos.inventario.reduce((a, i) => a + i.costoTotal, 0);
+  const totalVentas = datos.ventas.reduce((a, v) => a + v.total, 0);
+  const totalPagado = datos.pagos.reduce((a, p) => a + p.monto, 0);
+  const totalPorCobrar = totalVentas - totalPagado;
+
+  document.getElementById('reporte-stats').innerHTML = `
+    <div class="stat"><div class="value">${fmtMoneda(totalInventario)}</div><div class="label">Inversión en inventario</div></div>
+    <div class="stat"><div class="value">${fmtMoneda(totalVentas)}</div><div class="label">Total ventas</div></div>
+    <div class="stat"><div class="value">${fmtMoneda(totalPagado)}</div><div class="label">Total cobrado</div></div>
+    <div class="stat"><div class="value" style="color:${totalPorCobrar > 0 ? '#fca5a5' : '#4ade80'};">${fmtMoneda(totalPorCobrar)}</div><div class="label">Por cobrar</div></div>
+  `;
+
+  // Reporte por período
+  const { desde, hasta } = obtenerRangoReporte();
+  const ventasFiltradas = datos.ventas.filter(v => v.fecha >= desde && v.fecha <= hasta);
+  const pagosFiltrados = datos.pagos.filter(p => p.fecha >= desde && p.fecha <= hasta);
+
+  const totalVentasPer = ventasFiltradas.reduce((a, v) => a + v.total, 0);
+  const totalPagosPer = pagosFiltrados.reduce((a, p) => a + p.monto, 0);
+  const cont = document.getElementById('reporte-contenido');
+
+  let html = `<div class="stats" style="margin-bottom:16px;">
+    <div class="stat"><div class="value">${ventasFiltradas.length}</div><div class="label">Ventas</div></div>
+    <div class="stat"><div class="value">${fmtMoneda(totalVentasPer)}</div><div class="label">Ingresos por ventas</div></div>
+    <div class="stat"><div class="value">${fmtMoneda(totalPagosPer)}</div><div class="label">Pagos cobrados</div></div>
+    <div class="stat"><div class="value">${pagosFiltrados.length}</div><div class="label">Pagos recibidos</div></div>
+  </div>`;
+
+  if (ventasFiltradas.length) {
+    html += '<h3 style="color:#e74c3c;margin:10px 0 8px;">Ventas del período</h3>';
+    html += '<table><thead><tr><th>Fecha</th><th>Cliente</th><th>Tipo</th><th>Total</th><th>Estado</th></tr></thead><tbody>';
+    ventasFiltradas.sort((a, b) => b.fecha.localeCompare(a.fecha)).forEach(v => {
+      const pagado = datos.pagos.filter(p => p.ventaId === v.id).reduce((a, p) => a + p.monto, 0);
+      const saldo = v.total - pagado;
+      let estado = v.tipo === 'contado' ? 'pagado' : (saldo <= 0 ? 'pagado' : 'pendiente');
+      html += `<tr>
+        <td>${fmtFecha(v.fecha)}</td>
+        <td>${nombreCliente(v.clienteId)}</td>
+        <td><span class="badge ${v.tipo}">${v.tipo}</span></td>
+        <td><b>${fmtMoneda(v.total)}</b></td>
+        <td><span class="badge ${estado}">${estado}</span></td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  if (pagosFiltrados.length) {
+    html += '<h3 style="color:#e74c3c;margin:18px 0 8px;">Pagos del período</h3>';
+    html += '<table><thead><tr><th>Fecha</th><th>Cliente</th><th>Monto</th><th>Método</th></tr></thead><tbody>';
+    pagosFiltrados.sort((a, b) => b.fecha.localeCompare(a.fecha)).forEach(p => {
+      html += `<tr>
+        <td>${fmtFecha(p.fecha)}</td>
+        <td>${nombreCliente(p.clienteId)}</td>
+        <td style="color:#4ade80;"><b>${fmtMoneda(p.monto)}</b></td>
+        <td>${p.metodo}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  if (!ventasFiltradas.length && !pagosFiltrados.length) {
+    html += '<div class="empty">Sin movimientos en el período seleccionado.</div>';
+  }
+
+  cont.innerHTML = html;
+}
+
+// ===== COPIA DE SEGURIDAD =====
+function descargarCopia() {
+  const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'rafacarnes_backup_' + hoy() + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+function restaurarCopia(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data || !Array.isArray(data.inventario) || !Array.isArray(data.clientes) || !Array.isArray(data.ventas) || !Array.isArray(data.pagos)) {
+        alert('Archivo no válido. Debe ser un backup de esta aplicación.');
+        return;
+      }
+      if (!confirm('Esto reemplazará todos los datos actuales. ¿Continuar?')) return;
+      datos = data;
+      guardar();
+      init();
+      alert('Copia restaurada correctamente.');
+    } catch(e) {
+      alert('No se pudo leer el archivo.');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ===== INIT =====
+function init() {
+  document.getElementById('inv-fecha').value = hoy();
+  document.getElementById('vent-fecha').value = hoy();
+  document.getElementById('pago-fecha').value = hoy();
+  renderInventario();
+  renderClientes();
+  renderVentas();
+  renderPagos();
+  renderPagosHistorial();
+  renderReportes();
+  llenarSelectClientes();
+  toggleCreditoFields();
+}
+
+document.getElementById('modal-recibo-bg').addEventListener('click', e => {
+  if (e.target.id === 'modal-recibo-bg') cerrarModalRecibo();
+});
+document.getElementById('modal-venta-bg').addEventListener('click', e => {
+  if (e.target.id === 'modal-venta-bg') cerrarModalVenta();
+});
+
+cargar();
+init();
+</script>
+</body>
+</html>
